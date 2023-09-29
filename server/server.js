@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
 //Handling Uncaught Exeption
-process.on('uncaughtException', err => {
-    console.log('uncaught Exeption. Shutting down...');
-    console.log(err.name, err.message);
-    process.exit(1);
-})
+// process.on('uncaughtException', err => {
+//     console.log('uncaught Exeption. Shutting down...');
+//     console.log(err.name, err.message);
+//     process.exit(1);
+// })
 
 dotenv.config({path: './config.env'});
 const app = require('./index');
@@ -24,7 +24,7 @@ mongoose.connect(DB,{
 
 
 //Port
-const port = 5000 || process.env.PORT;
+const port = 5000
 
 
 //Listening to server!
