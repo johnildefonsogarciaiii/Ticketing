@@ -4,7 +4,7 @@ const User = require('../model/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const jwt = require('jsonwebtoken');
-const sendEmail = require('../utils/email');
+
 
 
 
@@ -152,12 +152,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   \nIf you didn't forget your password, please ignore this email!`;
 
     try {
-        await sendEmail({
-            email: user.email,
-            subject: 'Your password reset token (valid for 10 min)',
-            message
-        });
-
         res.status(200).json({
             status: 'success',
             message: 'Token sent to email!'
