@@ -8,9 +8,12 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import AuthService from "../services/AuthService";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserError } from "../store/userSlice";
+import { isLoading } from "../store/displaySlice";
+
 
 function Copyright(props) {
   return (
@@ -27,7 +30,8 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignUpForm({ onSwitchMode, isEmpty, handleSignup }) {
+export default function SignUpForm({ onSwitchMode, handleSignup }) {
+  const authService = AuthService();
   const dispatch = useDispatch()
   const error = useSelector(state => state.user.error)
   //clearing error to text field if text change
@@ -51,6 +55,18 @@ export default function SignUpForm({ onSwitchMode, isEmpty, handleSignup }) {
     }
 
   };
+
+
+  const demoVersionHandler = async() => {
+    dispatch(isLoading(true))
+    try {
+    const login = await authService.login("Demo@gmail.com", "Demo@gmail.com" );
+    } catch (error) {
+      console.log(error)
+    } finally {
+    dispatch(isLoading(false))
+    }
+  }
 
   
   return (
@@ -168,6 +184,14 @@ export default function SignUpForm({ onSwitchMode, isEmpty, handleSignup }) {
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign Up
+              </Button>
+              <Button
+              onClick={demoVersionHandler}
+                fullWidth
+                variant="contained"
+                sx={{ mb: 2 }}
+              >
+                Sign Up as Demo Version
               </Button>
 
               {/* switch Btn */}

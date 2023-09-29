@@ -3,11 +3,11 @@ import SignUpForm from "../layout/SignupForm";
 import assets from "../assets";
 import AuthService from "../services/AuthService";
 import Loader from "../components/loader";
-import ErrorAlert from "../components/errorAlert";
-import { useState } from "react";
+import ErrorAlert from "../components/alert/errorAlert";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { isLoading, isVisible, isSignup } from "../store/displaySlice";
-import { setUserError } from "../store/userSlice";
+import { isLoading, isSignup, isError } from "../store/displaySlice";
+import { setAllUsers, setUserError } from "../store/userSlice";
 import * as UserAPI from "../api/userAPI";
 import history from "../services/History";
 
@@ -25,13 +25,18 @@ export default function Authentication() {
     assets.images.signinBg
   );
 
-  const [isEmpty, setIsEmpty] = useState(false);
-
   const signup = useSelector((state) => state.display.signup);
   const loader = useSelector((state) => state.display.loader);
-  const visible = useSelector((state) => state.display.visible);
+  const error = useSelector((state) => state.display.error);
+  const allUsers = useSelector((state) => state.user.allUsers);
 
-  // console.log(visible)
+  useEffect(() => {
+    const fetchingAllUsers = async () => {
+      const res = await UserAPI.getAllUsers();
+      dispatch(setAllUsers(res.data.data.user));
+    };
+    fetchingAllUsers();
+  }, []);
 
   //Handle Login handleSignup
   const handleLogin = async (e) => {
@@ -53,13 +58,10 @@ export default function Authentication() {
         dispatch(setUserError({ name: false, email: false, password: true }));
       } else {
         const success = await authService.login(user.email, user.password);
-
         if (!success) {
-          dispatch(isVisible(true));
+          dispatch(isError(true));
         } else {
-          // WILL LINK TO HOME PAGE
           history.push("/home");
-          console.log("success");
         }
       }
     } catch (error) {
@@ -72,8 +74,11 @@ export default function Authentication() {
   //Handle Signin
   const handleSignup = async (e) => {
     e.preventDefault();
+    dispatch(isLoading(true));
+
     const data = new FormData(e.currentTarget);
-    const user = {
+    const formData = {
+      employeeID: "23-" + 1 + allUsers.length,
       email: data.get("email"),
       password: data.get("password"),
       name: data.get("name"),
@@ -81,33 +86,36 @@ export default function Authentication() {
 
     try {
       //creating error if text field is empty
-      if (user.email === "" && user.password === "" && user.name === "") {
+      if (
+        formData.email === "" &&
+        formData.password === "" &&
+        formData.name === ""
+      ) {
         dispatch(setUserError({ name: true, email: true, password: true }));
-      } else if (user.email === "" && user.password === "") {
+      } else if (formData.email === "" && formData.password === "") {
         dispatch(setUserError({ name: false, email: true, password: true }));
-      } else if (user.email === "" && user.name === "") {
+      } else if (formData.email === "" && formData.name === "") {
         dispatch(setUserError({ name: true, email: true, password: false }));
-      } else if (user.password === "" && user.name === "") {
+      } else if (formData.password === "" && formData.name === "") {
         dispatch(setUserError({ name: true, email: false, password: true }));
-      } else if (user.email === "") {
+      } else if (formData.email === "") {
         dispatch(setUserError({ name: false, email: true, password: false }));
-      } else if (user.password === "") {
+      } else if (formData.password === "") {
         dispatch(setUserError({ name: false, email: false, password: true }));
-      } else if (user.name === "") {
+      } else if (formData.name === "") {
         dispatch(setUserError({ name: true, email: false, password: false }));
       } else {
-        const success = await UserAPI.signup(
-          user.name,
-          user.email,
-          user.password
-        );
-
-        // WILL LINK TO HOME PAGE
+        const success = await UserAPI.signup(formData);
         history.push("/home");
+
+        const login = await authService.login(
+          formData.email,
+          formData.password
+        );
       }
+      window.location.reload();
     } catch (error) {
-      console.log(error);
-      dispatch(isVisible(true));
+      dispatch(isError(true));
     } finally {
       dispatch(isLoading(false));
     }
@@ -150,7 +158,7 @@ export default function Authentication() {
       ) : (
         <Grid container sx={{ height: "100vh" }}>
           {loader ? <Loader /> : null}
-          {visible ? (
+          {error ? (
             <ErrorAlert text="Please enter valid email or password" />
           ) : null}
           <Grid
@@ -163,7 +171,6 @@ export default function Authentication() {
             {signup ? (
               <SignUpForm
                 handleSignup={handleSignup}
-                isEmpty={isEmpty}
                 onSwitchMode={onSwitchMode}
               />
             ) : (

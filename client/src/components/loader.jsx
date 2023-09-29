@@ -10,8 +10,9 @@ export default function Loader() {
       open={loader}
       style={{
         zIndex: 1,
-        color: "#fff",
+        color: "#gray",
         display: "flex",
+        opacity: "0.5",
         flexDirection: "column",
       }}
     >

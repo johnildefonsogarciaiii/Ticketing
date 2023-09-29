@@ -3,6 +3,12 @@ const User = require('./userModel')
 
 
 const ticketSchema = new mongoose.Schema({
+    ticketID: {
+        type: String
+    },
+    actions:{
+        type: Boolean
+    },
     email: {
         type: String
     },
@@ -32,9 +38,9 @@ const ticketSchema = new mongoose.Schema({
         required: [true, "ticket location TO is required"],
         lowercase: true
     },
-    contact: {
-        type: Number,
-        required: [true, "contact number is required"]
+    endorsedTo: {
+        type: String,
+        lowercase: true
     },
     dateRequested: {
         type: Date

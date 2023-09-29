@@ -8,6 +8,10 @@ const bcrypt = require('bcrypt');
 
 //user Scheema
 const userSchema = new mongoose.Schema({
+    employeeID: {
+        type: String,
+        required: [true, 'Employee ID is required']
+    },
     name: {
         type: String,
         required: [true, 'Name of the user is required'],
@@ -22,17 +26,12 @@ const userSchema = new mongoose.Schema({
     },
     department: {
         type: String,
-
-        default: ""
     },
     designation: {
-        type: String,
-
-        default: ""
+        type: String
     },
     contact: {
-        type: Number,
-        default: ""
+        type: Number
     },
     role: {
         type: String,

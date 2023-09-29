@@ -2,23 +2,23 @@ import React from "react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { useSelector, useDispatch } from "react-redux";
-import { isVisible } from "../store/displaySlice";
+import { isUpdated } from "../../store/displaySlice";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function ErrorAlert({text}) {
+export default function UpdatedAlert({text}) {
   const dispatch = useDispatch();
-  const visible = useSelector(state => state.display.visible);
-  const open = visible
+  const updated = useSelector(state => state.display.updated);
+  const open = updated
 
-  const handleClose = () => dispatch(isVisible(false));
+  const handleClose = () => dispatch(isUpdated(false));
   return (
     <>
       {open ? (
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {text}
           </Alert>
         </Snackbar>

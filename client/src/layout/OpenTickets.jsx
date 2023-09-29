@@ -1,6 +1,6 @@
-import { Box, Container, Paper } from "@mui/material";
+import { Box, Button, Container, Paper, Stack } from "@mui/material";
 
-import TicketTable from "../components/tables/userTicketsTable";
+import TicketTable from "../components/tables/openTicketsTable";
 import SearchLegend from "../components/text/searchLegend";
 import ContentHeader from "../components/text/contentHeader";
 import SearchInput from "../components/inputFields/searchInput";
@@ -8,36 +8,36 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as TicketAPI from "../api/ticketAPI";
 import { setTickets } from "../store/ticketSlice";
-import CreateTicketForm from "./CreateTicketForm";
 import Loader from "../components/loader";
-import SuccessAlert from "../components/alert/successAlert";
-import ErrorAlert from "../components/alert/errorAlert";
-import UpdatedAlert from "../components/alert/updatedAlert";
 import * as UserAPI from "../api/userAPI";
 import { setUser } from "../store/userSlice";
+import ErrorAlert from "../components/alert/errorAlert";
+import UpdatedAlert from "../components/alert/updatedAlert";
+import { isLoading } from "../store/displaySlice";
 
-export default function UserTickets() {
+export default function OpenTickets() {
   const dispatch = useDispatch();
   const loader = useSelector((state) => state.display.loader);
 
-  const success = useSelector((state) => state.display.success);
-  const error = useSelector((state) => state.display.error);
   const updated = useSelector((state) => state.display.updated);
+  const error = useSelector((state) => state.display.error);
   const ticket = useSelector((state) => state.ticket.ticket);
-  const [currentUser, setCurrentUser] = useState({});
 
   // getting token from cookies
   const getToken = document.cookie.split("=");
   const token = getToken[1];
 
-  const userTicket = ticket.filter((ticket) => ticket.email === currentUser);
+  const userTicket = ticket.filter(
+    (ticket) => ticket.status === "submitted" || "processed"
+  );
+  const reversedTicket = [...userTicket].reverse();
 
   const [searchTicketID, setSearchTicketID] = useState("");
   const [searchConcern, setSearchConcern] = useState("");
   const [searchDescription, setSearchDescription] = useState("");
   const [searchedTickets, setSearchedTickets] = useState("");
-  // console.log(query)
-  // console.log(searchConcern)
+
+  const reversedSearchedTickets = [...searchedTickets].reverse();
 
   useEffect(() => {
     if (searchTicketID !== "") {
@@ -99,7 +99,6 @@ export default function UserTickets() {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setUser(res.data.data.data));
-      setCurrentUser(res.data.data.data.email);
     }
     fetchingUser();
   }, []);
@@ -111,7 +110,7 @@ export default function UserTickets() {
       dispatch(setTickets(res.data.data.tickets));
     }
     fetchingTickets();
-  }, [ticket, error, success]);
+  }, [ticket, error, updated]);
 
   // Onchange Handlers
   const ticketIDOnChangeHandler = (e) => {
@@ -128,13 +127,53 @@ export default function UserTickets() {
     setSearchDescription(e.target.value);
   };
 
+  const changeToAdmin = async (e) => {
+    e.preventDefault();
+    dispatch(isLoading(true));
+
+    try {
+      const res = await UserAPI.changeRoles(
+        { role: 'admin' },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(isLoading(false));
+    }
+  };
+
+
+
+  const changeToUser = async (e) => {
+    e.preventDefault();
+    dispatch(isLoading(true));
+
+    try {
+      const res = await UserAPI.changeRoles(
+        { role: 'user' },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(isLoading(false));
+    }
+  };
+
+
 
 
   return (
     <>
       {loader ? <Loader /> : null}
-      {success ? <SuccessAlert text="Ticket was created" /> : null}
-      {error ? <ErrorAlert text="Please fill-out all text fields" /> : null}
+      {error ? (
+        <ErrorAlert text="Action was restricted to Admin role. Please switch roles." />
+      ) : null}
       {updated ? <UpdatedAlert text="Ticket was updated" /> : null}
       <Container
         sx={{
@@ -180,31 +219,42 @@ export default function UserTickets() {
             }}
           >
             {/* Header */}
-            <ContentHeader text={"User Tickets"} />
+            <ContentHeader text={"Open Tickets"} />
             {/* Search Legend */}
             <SearchLegend />
-            <CreateTicketForm />
             <Box>
-              <SearchInput
-                label={"Search Ticket ID"}
-                searchInputHandler={ticketIDOnChangeHandler}
-              />
-              <SearchInput
-                label={"Search Concern"}
-                searchInputHandler={concernOnChangeHandler}
-              />
-              <SearchInput
-                label={"Search Description"}
-                searchInputHandler={descriptionOnChangeHandler}
-              />
+              <Stack
+                direction={{
+                  xs: "column",
+                  md: "row",
+                }}
+              >
+                <Stack direction={"column"}>
+                  <SearchInput
+                    label={"Search Ticket ID"}
+                    searchInputHandler={ticketIDOnChangeHandler}
+                  />
+                  <SearchInput
+                    label={"Search Concern"}
+                    searchInputHandler={concernOnChangeHandler}
+                  />
+                  <SearchInput
+                    label={"Search Description"}
+                    searchInputHandler={descriptionOnChangeHandler}
+                  />
+                </Stack>
+                <br />
+                <Button onClick={changeToAdmin}>Change to Admin role</Button>
+                <Button onClick={changeToUser}>Change to User role</Button>
+              </Stack>
             </Box>
 
             {/* User Ticket List */}
             <Box>
               {searchedTickets ? (
-                <TicketTable tickets={searchedTickets.reverse()} />
+                <TicketTable tickets={reversedSearchedTickets} />
               ) : (
-                <TicketTable tickets={userTicket.reverse()} />
+                <TicketTable tickets={reversedTicket} />
               )}
             </Box>
           </Container>

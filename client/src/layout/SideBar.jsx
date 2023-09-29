@@ -16,10 +16,22 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { Link } from "react-router-dom";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, clearUser } from "../store/userSlice";
+import { isLoading } from "../store/displaySlice";
+import * as UserAPI from "../api/userAPI";
+import * as TicketAPI from "../api/ticketAPI";
+import { setTickets } from "../store/ticketSlice";
+import { useEffect } from "react";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Button } from "@mui/material";
+import AuthService from "../services/AuthService";
+import history from "../services/History";
 
 const drawerWidth = 240;
 
@@ -89,8 +101,55 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function SideBar() {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const ticket = useSelector((state) => state.ticket);
+
+  const authService = AuthService();
+
+  // getting token from cookies
+  const getToken = document.cookie.split("=");
+  const token = getToken[1];
+
+  // Fetching Current User
+  useEffect(() => {
+    async function fetchingUser() {
+      const res = await UserAPI.getCurrentUser({
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setUser(res.data.data.data));
+    }
+    fetchingUser();
+  }, []);
+
+  // Fetching All Tickets
+  useEffect(() => {
+    async function fetchingAllTickets() {
+      const res = await TicketAPI.getAllTicket();
+      dispatch(setTickets(res.data.data.tickets));
+    }
+    fetchingAllTickets();
+  }, []);
+
+  const linkHandler = () => {
+    dispatch(isLoading(true));
+    try {
+      const fetchingUser = async () => {
+        const res = await UserAPI.getCurrentUser({
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        dispatch(setUser(res.data.data.data));
+      };
+      fetchingUser();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(isLoading(false));
+    }
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -98,6 +157,24 @@ export default function SideBar() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const logoutHandler = async() => {
+
+    try {
+      const res = await UserAPI.changeRoles(
+        { role: 'user' },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (error) {
+      console.log(error)
+    } finally {
+    dispatch(clearUser(null));
+    history.push("/");
+    authService.logout();
+    }
   };
 
   return (
@@ -142,26 +219,28 @@ export default function SideBar() {
         <List>
           {["Profile", "Tickets"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-              component="a"
-              href={text.toLowerCase()}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+              <Link to={text.toLowerCase()}>
+                <ListItemButton
+                  component="button"
+                  onClick={linkHandler}
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {index % 2 === 0 ? <AccountBoxIcon /> : <ListAltIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </Link>
             </ListItem>
           ))}
         </List>
@@ -184,31 +263,58 @@ export default function SideBar() {
           </Typography>
         </Box>
         <List>
-          {["Dashboard", "All-Tickets", "Monitoring"].map((text, index) => (
+          {["All-Tickets", "Monitoring"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                component="a"
-                href={text.toLowerCase()}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+              <Link to={text.toLowerCase()}>
+                <ListItemButton
+                  component="button"
+                  onClick={linkHandler}
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {index % 2 === 0 ? <FormatListBulletedIcon /> : <PlaylistAddCheckIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </Link>
             </ListItem>
           ))}
         </List>
+
+        <br />
+        <Divider />
+        <ListItem disablePadding sx={{ display: "block" }}>
+          <ListItemButton
+            component={Button}
+            onClick={logoutHandler}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? "initial" : "center",
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
       </Drawer>
     </Box>
   );

@@ -1,0 +1,17 @@
+.Submitted-row {
+    background-color: rgb(144, 241, 131);
+  }
+
+  .Processed-row {
+    background-color: rgb(233, 178, 95);
+  }
+
+
+  .Completed-row {
+    background-color: rgb(43, 144, 240);
+  }
+
+
+  .Cancelled-row {
+    background-color: rgb(243, 95, 90);
+  }

@@ -10,6 +10,7 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserError } from "../store/userSlice";
+import { Link } from "@mui/material";
 
 function Copyright(props) {
   return (
@@ -33,6 +34,8 @@ export default function LoginForm({ onSwitchMode, handleLogin }) {
   const passwordError = error.password;
 
 
+  const user = useSelector((state) => state.user.user);
+  // console.log(user)
 
 
   //clearing error to text field if text change
@@ -133,6 +136,7 @@ export default function LoginForm({ onSwitchMode, handleLogin }) {
                 />
               )}
               {/* submit Btn */}
+              <Link to='profile'>
               <Button
                 type="submit"
                 fullWidth
@@ -140,7 +144,7 @@ export default function LoginForm({ onSwitchMode, handleLogin }) {
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
-              </Button>
+              </Button></Link>
               {/* switch Btn */}
               <Grid container>
                 <Grid item>

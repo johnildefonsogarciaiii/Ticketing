@@ -43,8 +43,9 @@ exports.createTicket = catchAsync(async(req, res, next) => {
     const stringDate = currentDate.toLocaleDateString(undefined, options)
     
     const ticket = await Ticket.create({
+        ticketID: req.body.ticketID,
+        actions: req.body.actions,
         email: req.body.email,
-        contact: req.body.contact,
         concern: req.body.concern,
         status: req.body.status,
         description: req.body.description,
