@@ -9,7 +9,7 @@ process.on('uncaughtException', err => {
 })
 
 dotenv.config({path: './config.env'});
-const app = require('./app');
+const app = require('./index');
 
 
 const DB = 'mongodb+srv://johnildefonsogarciaiii:eioupe222664@cluster0.x3f7uxc.mongodb.net/TICKETING'
