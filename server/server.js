@@ -24,7 +24,7 @@ mongoose.connect(DB,{
 
 
 //Port
-const port = 5000 || process.env.PORT;
+const port = 5000
 
 
 //Listening to server!
