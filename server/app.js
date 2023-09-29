@@ -9,7 +9,7 @@ const xss = require('xss-clean');
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: [],
+    origin: ['https://ticketing-api-blond.vercel.app/'],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true
 }));
