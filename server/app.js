@@ -8,7 +8,11 @@ const xss = require('xss-clean');
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: [],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true
+}));
 app.use(cookieParser());
 
 

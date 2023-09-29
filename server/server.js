@@ -12,7 +12,7 @@ dotenv.config({path: './config.env'});
 const app = require('./app');
 
 
-const DB = process.env.DATABASE
+const DB = 'mongodb+srv://johnildefonsogarciaiii:eioupe222664@cluster0.x3f7uxc.mongodb.net/TICKETING'
 
 //Connecting to MongoDB
 mongoose.connect(DB,{
