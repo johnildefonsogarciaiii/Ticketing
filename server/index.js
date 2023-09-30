@@ -13,7 +13,7 @@ app.use(cors(
     origin: ['https://ticketing-fronend.vercel.app'],
     credentials: true,
     Access-Control-Allow-Origin: *,
-    methods: GET", "POST", "PATCH", "DELETE",
+    methods: "GET", "POST", "PATCH", "DELETE",
     
 }
 ));
