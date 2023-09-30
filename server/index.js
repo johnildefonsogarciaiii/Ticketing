@@ -44,6 +44,9 @@ app.use(helmet());
 
 
 //Routes
+app.get('/', function (req, res) {
+    res.json("Success!");
+});
 app.use('/user', userRouter);
 app.use('/ticket', ticketRouter);
 
