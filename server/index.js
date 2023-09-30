@@ -11,10 +11,9 @@ app.use(express.json());
 app.use(cors(
     {
     origin: ['https://ticketing-fronend.vercel.app'],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
-    Access-Control-Allow-Origin: *,
-    methods: "GET", "POST", "PATCH", "DELETE",
-    
+    Access-Control-Allow-Origin: *
 }
 ));
 app.use(cookieParser());
