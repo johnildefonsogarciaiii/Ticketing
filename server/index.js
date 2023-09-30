@@ -9,11 +9,12 @@ const xss = require('xss-clean');
 const app = express();
 app.use(express.json());
 app.use(cors(
-//     {
-//     origin: ['https://ticketing-fronend.vercel.app'],
-//     methods: ["GET", "POST", "PATCH", "DELETE"],
-//     credentials: true
-// }
+    {
+    origin: ['https://ticketing-fronend.vercel.app'],
+    credentials: true,
+    methods: GET", "POST", "PATCH", "DELETE",
+    
+}
 ));
 app.use(cookieParser());
 
