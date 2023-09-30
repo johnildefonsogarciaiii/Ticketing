@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.use(cors(
     {
-    origin: 'https://ticketing-fronend.vercel.app',
+    origin: '*',
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
 }
