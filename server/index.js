@@ -8,11 +8,13 @@ const xss = require('xss-clean');
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-    origin: ['https://ticketing-frontend-woad.vercel.app'],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true
-}));
+app.use(cors(
+//     {
+//     origin: ['https://ticketing-frontend-woad.vercel.app'],
+//     methods: ["GET", "POST", "PATCH", "DELETE"],
+//     credentials: true
+// }
+));
 app.use(cookieParser());
 
 
