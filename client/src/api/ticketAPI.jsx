@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({baseURL: 'https://ticketing-api-zeta.vercel.app'});
+const API = axios.create({baseURL: 'https://ticketing-omega.vercel.app'});
 
 export const getAllTicket = () => API.get('/ticket');
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-const API = axios.create({baseURL: 'https://ticketing-api-zeta.vercel.app'})
+const API = axios.create({baseURL: 'https://ticketing-omega.vercel.app'})
 
 export const login = (email, password) => API.post('/user/login', {email, password});
 
