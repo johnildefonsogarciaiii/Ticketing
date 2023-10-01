@@ -9,12 +9,12 @@ const xss = require('xss-clean');
 const app = express();
 app.use(express.json());
 
-const allowCrossDomain = (req, res, next) => {
-  res.header(`Access-Control-Allow-Origin`, `https://ticketing-fronend.vercel.app`);
-  res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-  res.header(`Access-Control-Allow-Headers`, `Content-Type`);
-  next();
-};
+// const allowCrossDomain = (req, res, next) => {
+//   res.header(`Access-Control-Allow-Origin`, `https://ticketing-fronend.vercel.app`);
+//   res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
+//   res.header(`Access-Control-Allow-Headers`, `Content-Type`);
+//   next();
+// };
 
 // app.use(cors(
 //     {
@@ -24,7 +24,15 @@ const allowCrossDomain = (req, res, next) => {
 // }
 // ));
 
-  app.use(allowCrossDomain);
+app.use(cors(
+    {
+    origin: '*',
+    // methods: ["GET", "POST", "PATCH", "DELETE"],
+    // credentials: true,
+}
+));
+
+  // app.use(allowCrossDomain);
 app.use(cookieParser());
 
 
