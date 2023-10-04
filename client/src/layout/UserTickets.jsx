@@ -31,11 +31,14 @@ export default function UserTickets() {
   const token = getToken[1];
 
   const userTicket = ticket.filter((ticket) => ticket.email === currentUser);
+  const reversedUserTicket = [...userTicket].reverse();
 
   const [searchTicketID, setSearchTicketID] = useState("");
   const [searchConcern, setSearchConcern] = useState("");
   const [searchDescription, setSearchDescription] = useState("");
   const [searchedTickets, setSearchedTickets] = useState("");
+
+  const reversedSearchedTickets = [...searchedTickets].reverse();
   // console.log(query)
   // console.log(searchConcern)
 
@@ -202,9 +205,9 @@ export default function UserTickets() {
             {/* User Ticket List */}
             <Box>
               {searchedTickets ? (
-                <TicketTable tickets={searchedTickets.reverse()} />
+                <TicketTable tickets={reversedSearchedTickets} />
               ) : (
-                <TicketTable tickets={userTicket.reverse()} />
+                <TicketTable tickets={reversedUserTicket} />
               )}
             </Box>
           </Container>
