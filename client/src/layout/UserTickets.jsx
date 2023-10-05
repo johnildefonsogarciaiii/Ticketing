@@ -15,7 +15,7 @@ import ErrorAlert from "../components/alert/errorAlert";
 import UpdatedAlert from "../components/alert/updatedAlert";
 import * as UserAPI from "../api/userAPI";
 import { setUser } from "../store/userSlice";
-import { isLoading } from "../store/displaySlice";
+
 
 export default function UserTickets() {
   const dispatch = useDispatch();
@@ -121,8 +121,7 @@ export default function UserTickets() {
     dispatch(isLoading(false));
     }
     fetchingTickets();
-  // }, [ticket, error, success]);
-      }, [error, success]);
+  }, [ticket, error, success]);
 
   // Onchange Handlers
   const ticketIDOnChangeHandler = (e) => {
