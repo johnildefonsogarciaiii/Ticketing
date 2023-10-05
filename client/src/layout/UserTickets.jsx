@@ -101,13 +101,11 @@ export default function UserTickets() {
   useEffect(() => {
 
     async function fetchingUser() {
-          dispatch(isLoading(true));
       const res = await UserAPI.getCurrentUser({
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setUser(res.data.data.data));
       setCurrentUser(res.data.data.data.email);
-    dispatch(isLoading(false));
     }
     fetchingUser();
   }, []);
@@ -115,10 +113,8 @@ export default function UserTickets() {
   // Fetching User Tickets
   useEffect(() => {
     async function fetchingTickets() {
-          dispatch(isLoading(true));
       const res = await TicketAPI.getAllTicket();
       dispatch(setTickets(res.data.data.tickets));
-    dispatch(isLoading(false));
     }
     fetchingTickets();
   }, [ticket, error, success]);
