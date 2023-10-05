@@ -122,7 +122,7 @@ export default function UserTickets() {
     }
     fetchingTickets();
   // }, [ticket, error, success]);
-      }, []);
+      }, [error, success]);
 
   // Onchange Handlers
   const ticketIDOnChangeHandler = (e) => {
