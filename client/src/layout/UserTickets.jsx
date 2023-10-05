@@ -98,8 +98,9 @@ export default function UserTickets() {
 
   // Fetching Current User
   useEffect(() => {
-    dispatch(isLoading(true));
+
     async function fetchingUser() {
+          dispatch(isLoading(true));
       const res = await UserAPI.getCurrentUser({
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -112,8 +113,8 @@ export default function UserTickets() {
 
   // Fetching User Tickets
   useEffect(() => {
-    dispatch(isLoading(true));
     async function fetchingTickets() {
+          dispatch(isLoading(true));
       const res = await TicketAPI.getAllTicket();
       dispatch(setTickets(res.data.data.tickets));
     dispatch(isLoading(false));
