@@ -15,6 +15,7 @@ import ErrorAlert from "../components/alert/errorAlert";
 import UpdatedAlert from "../components/alert/updatedAlert";
 import * as UserAPI from "../api/userAPI";
 import { setUser } from "../store/userSlice";
+import { isLoading } from "../store/displauSlice";
 
 export default function UserTickets() {
   const dispatch = useDispatch();
@@ -97,21 +98,25 @@ export default function UserTickets() {
 
   // Fetching Current User
   useEffect(() => {
+    dispatch(isLoading(true));
     async function fetchingUser() {
       const res = await UserAPI.getCurrentUser({
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setUser(res.data.data.data));
       setCurrentUser(res.data.data.data.email);
+    dispatch(isLoading(false));
     }
     fetchingUser();
   }, []);
 
   // Fetching User Tickets
   useEffect(() => {
+    dispatch(isLoading(true));
     async function fetchingTickets() {
       const res = await TicketAPI.getAllTicket();
       dispatch(setTickets(res.data.data.tickets));
+    dispatch(isLoading(false));
     }
     fetchingTickets();
   }, [ticket, error, success]);
