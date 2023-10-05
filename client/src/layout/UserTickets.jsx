@@ -15,7 +15,7 @@ import ErrorAlert from "../components/alert/errorAlert";
 import UpdatedAlert from "../components/alert/updatedAlert";
 import * as UserAPI from "../api/userAPI";
 import { setUser } from "../store/userSlice";
-import { isLoading } from "../store/displauSlice";
+import { isLoading } from "../store/displaySlice";
 
 export default function UserTickets() {
   const dispatch = useDispatch();
