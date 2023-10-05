@@ -95,6 +95,7 @@ export default function UserTickets() {
       setSearchedTickets("");
     }
   }, [searchTicketID, searchConcern, searchDescription]);
+  
 
   // Fetching Current User
   useEffect(() => {
@@ -120,7 +121,8 @@ export default function UserTickets() {
     dispatch(isLoading(false));
     }
     fetchingTickets();
-  }, [ticket, error, success]);
+  // }, [ticket, error, success]);
+      }, []);
 
   // Onchange Handlers
   const ticketIDOnChangeHandler = (e) => {
