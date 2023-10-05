@@ -29,7 +29,6 @@ export default function CancelTicketModal({ticketID}) {
   };
   const handleClose = () => {
     setOpen(false);
-    dispatch(isUpdated(true));
   };
 
   // getting token from cookies
